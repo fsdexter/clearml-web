@@ -1,0 +1,20 @@
+<div class="editable-container h-100" [class.dark-theme]="isDarkTheme" [class]="containerClass" [class.edit-mode]="inEditMode && !disableInEditMode" [class.disable-edit]="disableEditable"
+     (dblclick)="editable && !disableEditable && (!inEditMode) && editModeChanged(true)">
+  <div class="edit-wrapper" *ngIf="editable && !disableEditable && !inEditMode">
+    <ng-content select="[extra-buttons]"></ng-content>
+    <button *ngIf="!hideEditButton" id="editSection" class="edit-pen btn-dark-fill pointer"
+            (click)="editModeChanged(true)">
+      <i class="fa fa-pencil"></i> EDIT
+    </button>
+  </div>
+  <ng-content formData></ng-content>
+  <div class="cancel-save action-button edit-mode" *ngIf="inEditMode && !disableInEditMode">
+    <button class="btn btn-dark-fill cancel" (click)="cancelClickedEvent()">CANCEL</button>
+    <sm-loading-button
+      *ngIf="!hideSaveButton"
+      [disabled]="disableSave" label="SAVE"
+      [loading]="saving"
+      (click)="!disableSave && !saving && saveSection()"
+      class="action-button"></sm-loading-button>
+  </div>
+</div>

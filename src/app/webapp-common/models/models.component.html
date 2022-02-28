@@ -1,0 +1,66 @@
+<div class="w-100 model-header">
+  <sm-model-header
+    [isArchived]="isArchived$ | async"
+    [disableCreateNewButton]="isExampleProject"
+    [autoRefreshState]="autoRefreshState$ | async"
+    [tableCols]="tableCols$ | async"
+    [sharedView]="isSharedAndNotOwner$|async"
+    (isArchivedChanged)="archivedChanged($event)"
+    (setAutoRefresh)="setAutoRefresh($event)"
+    (refreshListClicked)="refreshList(false)"
+    (selectedTableColsChanged)="selectedTableColsChanged($event)"
+  ></sm-model-header>
+</div>
+<div class="models-body" [class.footer-visible]="(selectedModels$ | async)?.length > 1|| (showAllSelectedIsActive$ |async)">
+  <as-split #split
+            [useTransition]="true"
+            [gutterDblClickDuration]="400"
+            (gutterClick)="clickOnSplit()"
+            (gutterDblClick)="closeModelPanel()"
+            (dragEnd)="splitSizeChange($event)"
+            (dragStart)="disableInfoPanel()"
+            (transitionEnd)="modelsTable.table.resize()"
+  >
+    <as-split-area [size]="100 - splitInitialSize" [visible]="!(isSharedAndNotOwner$ | async)">
+      <sm-models-table
+        #modelsTable
+        class="w-100 align-self-stretch"
+        selectionMode="single"
+        [models]="models$ | async"
+        [tableCols]="tableCols$ | async"
+        [minimizedView]="minimizedView"
+        [noMoreModels]="noMoreModels$ | async"
+        [users]="users$ |async"
+        [frameworks]="frameworks$ |async"
+        [tags]="tags$ | async"
+        [systemTags]="systemTags$ | async"
+        [tableSortFields]="(tableSortFields$ | async)"
+        [tableSortOrder]="(tableSortOrder$ | async)"
+        [tableFilters]="(tableFilters$ | async)"
+        [colsOrder]="(tableColsOrder$ | async)"
+        [selectedModels]="selectedModels$ | async"
+        [selectedModelsDisableAvailable]="selectedModelsDisableAvailable$ | async"
+        [selectedModel]="selectedModel$ | async"
+        [split]="selectSplitSize$ | async"
+        (onColumnsReordered)="columnsReordered($event)"
+        (modelSelectionChanged)="modelSelectionChanged($event)"
+        (modelsSelectionChanged)="modelsSelectionChanged($event)"
+        (tagsMenuOpened)="refreshTagsList()"
+        (sortedChanged)="sortedChanged($event)"
+        (columnResized)="columnResized($event)"
+        (filterChanged)="filterChanged($event)"
+        (loadMoreModels)="getNextModels()"
+      >
+      </sm-models-table>
+    </as-split-area>
+    <as-split-area [size]="splitInitialSize" class="light-theme" [visible]="minimizedView">
+      <router-outlet></router-outlet>
+    </as-split-area>
+  </as-split>
+</div>
+<sm-entity-footer
+ [footerItems]="footerItems"
+ (onFooterItemClick)="onFooterHandler($event)"
+ (tagSelected)="tagSelected($event, 'models')"
+>
+</sm-entity-footer>
